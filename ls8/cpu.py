@@ -68,7 +68,6 @@ class CPU:
 
         for i in range(8):
             print(" %02X" % self.reg[i], end='')
-
         print()
 
     def ram_read(self, count):
@@ -85,14 +84,16 @@ class CPU:
         PRN = 0b01000111
         HLT = 0b00000001
         MUL = 0b10100010
+        PUSH = 0b01000101
+        POP = 0b01000110
         IR = self.pc
-
-
+        SP = 243
         running = True
 
         while running:
             operand_a = self.ram_read(IR+1)
             operand_b = self.ram_read(IR+2)
+
             if self.ram[IR] == LDI:
                 #load operand_b into ram at location ram[operand_a]
                 self.ram_write(operand_a, operand_b)
@@ -102,8 +103,9 @@ class CPU:
 
             elif self.ram[IR] == PRN:
                 #print the thing and increment.
-                print(f"{self.ram[self.ram[IR+1]]}")
+                print(f"YOUR PRINT SIRE: {self.ram[self.ram[IR+1]]}")
                 IR += 2
+
             elif self.ram[IR] == MUL:
                 #multiply r0 and r1
                 temp = self.ram_read(operand_a) * self.ram_read(operand_b)
@@ -111,8 +113,27 @@ class CPU:
                 #save the resulting value into r0.
                 self.ram_write(operand_a, temp)
                 IR += 3
+            
+            elif self.ram[IR] == PUSH:
+                #decrement stack pointer by 1
+                SP -= 1
+                #add item into the current position on the stack 
+                item = self.ram_read(operand_a)
+                self.ram_write(SP, item)
+                #increment IR but number of instructions in this call
+                IR += 2
+
+            elif self.ram[IR] == POP:
+                #remove item from the current position
+                item = self.ram_read(SP)
+                self.ram_write(operand_a, item)
+                #increment the SP by 1
+                SP += 1
+                IR += 2
+               
             elif self.ram[IR] == HLT:
                 running = False
+
             else:
                 print(f"unrecognized input, moving to next cycle")
                 IR += 1 
