@@ -150,7 +150,6 @@ class CPU:
             elif self.ram[IR] == ADD:
                 #add r0 and r0
                 temp = self.ram_read(operand_a) + self.ram_read(operand_b)
-                print(f"{self.ram_read(operand_a)} times 2")
                 #save the resulting value into r0.
                 self.ram_write(operand_a, temp)
                 IR += 3
