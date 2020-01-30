@@ -86,6 +86,9 @@ class CPU:
         MUL = 0b10100010
         PUSH = 0b01000101
         POP = 0b01000110
+        CALL = 0b01010000
+        RET = 0b00010001
+        ADD = 0b10100000
         IR = self.pc
         SP = 243
         running = True
@@ -130,8 +133,28 @@ class CPU:
                 #increment the SP by 1
                 SP += 1
                 IR += 2
-               
-            elif self.ram[IR] == HLT:
+            
+            elif self.ram[IR] == CALL:
+                #decrement stack pointer by 1
+                SP -= 1
+                #save current IR number somewhere (in the stack)
+                self.ram_write(SP, IR)
+                #move IR counter to location of subroutine.
+                IR = self.ram_read(operand_a)
+                #this should execute the subroutine, which will include a RET
+
+            elif self.ram[IR] == RET:
+                #Modifies IR counter back to saved IR from the call (plus two? because 2 instructions in CALL)
+                IR = self.ram_read(SP) + 2
+            
+            elif self.ram[IR] == ADD:
+                #add r0 and r0
+                temp = self.ram_read(operand_a) + self.ram_read(operand_b)
+                #save the resulting value into r0.
+                self.ram_write(operand_a, temp)
+                IR += 3
+
+            elif self.ram[IR] == HLT: 
                 running = False
 
             else:
