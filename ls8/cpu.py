@@ -155,7 +155,7 @@ class CPU:
                 self.ram_write(operand_a, temp)
                 IR += 3
 
-            elif self.ram[IR] == HLT:
+            elif self.ram[IR] == HLT: 
                 running = False
 
             else:
