@@ -10,6 +10,7 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
+        self.FL = [0] * 8
 
     def load(self):
         """Load a program into memory."""
@@ -89,6 +90,7 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
+        CMP = 
         IR = self.pc
         SP = 243
         running = True
