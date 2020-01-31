@@ -10,6 +10,7 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
+        self.FL = [0] * 8
 
     def load(self):
         """Load a program into memory."""
@@ -89,6 +90,10 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
+        CMP = 0b10100111
+        JNE = 0b01010110
+        JEQ = 0b01010101
+        JMP = 0b01010100
         IR = self.pc
         SP = 243
         running = True
@@ -153,6 +158,36 @@ class CPU:
                 #save the resulting value into r0.
                 self.ram_write(operand_a, temp)
                 IR += 3
+
+            elif self.ram[IR] == CMP:
+                if self.ram_read(operand_a) == self.ram_read(operand_b):
+                    self.FL[5] = 0  #Less than flag
+                    self.FL[6] = 0  #Greater than flag
+                    self.FL[7] = 1  #Equals flag
+                elif self.ram_read(operand_a) > self.ram_read(operand_b):
+                    self.FL[5] = 0
+                    self.FL[6] = 1
+                    self.FL[7] = 0
+                elif self.ram_read(operand_a) < self.ram_read(operand_b):
+                    self.FL[5] = 1
+                    self.FL[6] = 0
+                    self.FL[7] = 0
+                IR += 3
+
+            elif self.ram[IR] == JMP:
+                IR = self.ram_read(operand_a)
+
+            elif self.ram[IR] == JEQ:
+                if self.FL[7] == 1:
+                    IR = self.ram_read(operand_a)
+                else:
+                    IR += 2
+
+            elif self.ram[IR] == JNE:
+                if self.FL[7] == 0:
+                    IR = self.ram_read(operand_a) 
+                else:
+                    IR += 2 
 
             elif self.ram[IR] == HLT: 
                 running = False
