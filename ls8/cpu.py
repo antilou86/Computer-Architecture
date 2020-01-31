@@ -90,7 +90,11 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
-        CMP = 
+        #################
+        CMP = 0b10100111
+        JNE = 0b01010110
+        JEQ = 0b01010101
+        JMP = 0b01010100
         IR = self.pc
         SP = 243
         running = True
@@ -155,6 +159,29 @@ class CPU:
                 #save the resulting value into r0.
                 self.ram_write(operand_a, temp)
                 IR += 3
+
+            elif self.ram[IR] == CMP:
+                if operand_a == operand_b:
+                    self.FL[5] = 0  #Less than flag
+                    self.FL[6] = 0  #Greater than flag
+                    self.FL[7] = 1  #Equals flag
+                elif operand_a > operand_b:
+                    self.FL[5] = 0
+                    self.FL[6] = 1
+                    self.FL[7] = 0
+                elif operand_a < operand_b:
+                    self.FL[5] = 1
+                    self.FL[6] = 0
+                    self.FL[7] = 0
+                IR += 2
+
+            elif self.ram[IR] == JMP:
+                pass
+            elif self.ram[IR] == JEQ:
+                pass
+            elif self.ram[IR] == JNE:
+                pass
+            
 
             elif self.ram[IR] == HLT: 
                 running = False
