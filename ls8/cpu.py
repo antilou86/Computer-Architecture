@@ -183,8 +183,8 @@ class CPU:
                     IR = operand_a
 
             elif self.ram[IR] == JNE:
-                pass
-            
+                if self.FL[7] == 0:
+                    IR = operand_a
 
             elif self.ram[IR] == HLT: 
                 running = False
