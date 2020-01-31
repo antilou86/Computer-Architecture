@@ -90,7 +90,6 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
-        #################
         CMP = 0b10100111
         JNE = 0b01010110
         JEQ = 0b01010101
@@ -161,30 +160,34 @@ class CPU:
                 IR += 3
 
             elif self.ram[IR] == CMP:
-                if operand_a == operand_b:
+                if self.ram_read(operand_a) == self.ram_read(operand_b):
                     self.FL[5] = 0  #Less than flag
                     self.FL[6] = 0  #Greater than flag
                     self.FL[7] = 1  #Equals flag
-                elif operand_a > operand_b:
+                elif self.ram_read(operand_a) > self.ram_read(operand_b):
                     self.FL[5] = 0
                     self.FL[6] = 1
                     self.FL[7] = 0
-                elif operand_a < operand_b:
+                elif self.ram_read(operand_a) < self.ram_read(operand_b):
                     self.FL[5] = 1
                     self.FL[6] = 0
                     self.FL[7] = 0
-                IR += 2
+                IR += 3
 
             elif self.ram[IR] == JMP:
-                IR = operand_a
+                IR = self.ram_read(operand_a)
 
             elif self.ram[IR] == JEQ:
                 if self.FL[7] == 1:
-                    IR = operand_a
+                    IR = self.ram_read(operand_a)
+                else:
+                    IR += 2
 
             elif self.ram[IR] == JNE:
                 if self.FL[7] == 0:
-                    IR = operand_a
+                    IR = self.ram_read(operand_a) 
+                else:
+                    IR += 2 
 
             elif self.ram[IR] == HLT: 
                 running = False
