@@ -177,8 +177,11 @@ class CPU:
 
             elif self.ram[IR] == JMP:
                 IR = operand_a
+
             elif self.ram[IR] == JEQ:
-                pass
+                if self.FL[7] == 1:
+                    IR = operand_a
+
             elif self.ram[IR] == JNE:
                 pass
             
