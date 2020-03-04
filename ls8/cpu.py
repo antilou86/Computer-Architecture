@@ -80,7 +80,7 @@ class CPU:
     def run(self):
         """Run the CPU."""
         self.load()
-
+        PRA = 0b01001000
         LDI = 0b10000010
         PRN = 0b01000111
         HLT = 0b00000001
@@ -188,7 +188,11 @@ class CPU:
                     IR = self.ram_read(operand_a) 
                 else:
                     IR += 2 
-
+            elif self.ram[IR] == PRA:
+                #print the value stored in r0 as an ascii
+                value = chr(self.ram_read(operand_a))
+                print(f"{value}")
+                IR += 2
             elif self.ram[IR] == HLT: 
                 running = False
 
